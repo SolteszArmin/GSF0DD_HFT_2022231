@@ -34,25 +34,25 @@ namespace GSF0DD_HFT_2022231.Test
 
             var publishers = new List<Publisher>()
             {
-                new Publisher() { Name="From Software", PublisherId=1 },
-            new Publisher() { Name = "Activision", PublisherId = 2 },
-            new Publisher() { Name = "Blizzard", PublisherId = 3 }
+                FromSoftware,
+                Activision,
+                Blizzard
             }.AsQueryable();
 
             var genres = new List<Genre>()
             {
-                new Genre() { Name = "Action", GenreId = 1 },
-                new Genre() { Name = "MMO", GenreId = 2 },
-                new Genre() { Name = "OpenWorld", GenreId = 3 }
+                Action,
+                MMO,
+                OpenWorld
             }.AsQueryable();
 
             var games = new List<Game>()
             {
-                new Game() {GameId=1,Name="World of Warcraft", GenreId=2, PublisherId=3, ReleaseDate=new DateTime(2004,10,4)},
-                new Game() {GameId=2,Name="Elden Ring", GenreId=3, PublisherId=1, ReleaseDate=new DateTime(2022,10,4)},
-                new Game() {GameId=3,Name="Dark souls 2", GenreId=1, PublisherId=1, ReleaseDate=new DateTime(20015,10,4)},
-                new Game() {GameId=4,Name="Sekiro", GenreId=1, PublisherId=1, ReleaseDate=new DateTime(2021,10,4)},
-                new Game() {GameId=5,Name="Call of Duty 2", GenreId=1, PublisherId=2, ReleaseDate=new DateTime(2012,10,4)},
+                new Game() {GameId=1,Name="World of Warcraft", GenreId=MMO.GenreId, PublisherId=Blizzard.PublisherId, ReleaseDate=new DateTime(2004,10,4)},
+                new Game() {GameId=2,Name="Elden Ring", GenreId=OpenWorld.GenreId, PublisherId=FromSoftware.PublisherId, ReleaseDate=new DateTime(2022,10,4)},
+                new Game() {GameId=3,Name="Dark souls 2", GenreId=Action.GenreId, PublisherId=FromSoftware.PublisherId, ReleaseDate=new DateTime(2015,10,4)},
+                new Game() {GameId=4,Name="Sekiro", GenreId=Action.GenreId, PublisherId=FromSoftware.PublisherId, ReleaseDate=new DateTime(2021,10,4)},
+                new Game() {GameId=5,Name="Call of Duty 2", GenreId=Action.GenreId, PublisherId=Activision.PublisherId, ReleaseDate=new DateTime(2012,10,4)},
             }.AsQueryable();
 
             gameMocRepo = new Mock<IRepository<Game>>();
@@ -66,6 +66,20 @@ namespace GSF0DD_HFT_2022231.Test
             publisherMocRepo = new Mock<IRepository<Publisher>>();
             publisherMocRepo.Setup(x => x.ReadAll()).Returns(publishers);
             PublisherLogic = new PublisherLogic(publisherMocRepo.Object);
+        }
+
+        [Test]
+        public void GamesPublishedByFromSoftwareTest()
+        {
+            var result = GameLogic.GamesPublishedByFromSoftware();
+            var expected = new List<Game>()
+            {
+                new Game() {GameId=2,Name="Elden Ring", GenreId=3, PublisherId=1, ReleaseDate=new DateTime(2022,10,4)},
+                new Game() {GameId=3,Name="Dark souls 2", GenreId=1, PublisherId=1, ReleaseDate=new DateTime(2015,10,4)},
+                new Game() {GameId=4,Name="Sekiro", GenreId=1, PublisherId=1, ReleaseDate=new DateTime(2021,10,4)}
+            }.AsQueryable();
+
+            Assert.AreEqual(expected, result);
         }
     }
 }

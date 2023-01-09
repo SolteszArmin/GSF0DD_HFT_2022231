@@ -36,5 +36,19 @@ namespace GSF0DD_HFT_2022231.Models
 
         [ForeignKey(nameof(Publisher))]
         public int PublisherId { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            Game game = obj as Game;
+
+            if (game is null)
+            {
+                return false;
+            }
+            else
+            {
+                return game.GameId == this.GameId && game.Name == this.Name && game.ReleaseDate == this.ReleaseDate;
+            }
+        }
     }
 }
