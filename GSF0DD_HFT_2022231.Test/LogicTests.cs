@@ -141,6 +141,51 @@ namespace GSF0DD_HFT_2022231.Test
             Assert.AreEqual(expected, result);
         }
 
+
+        [Test]
+        public void CreateTest1()
+        {
+            var proc = new Game() { Name = "sajt", ReleaseDate = new DateTime(1999, 01, 01) };
+            GameLogic.Create(proc);
+            gameMocRepo.Verify(x => x.Create(proc), Times.Once());
+        }
+        [Test]
+        public void CreateTest2()
+        {
+            var proc = new Game() { Name = "" };
+            try
+            {
+                GameLogic.Create(proc);
+            }
+            catch
+            {
+            }
+            gameMocRepo.Verify(t => t.Create(proc), Times.Never);
+        }
+
+        [Test]
+        public void CreatTest3()
+        {
+            var game = new Game();
+            try
+            {
+                GameLogic.Create(game);
+            }
+            catch
+            {
+            }
+            Assert.That(() => GameLogic.Create(game), Throws.TypeOf<ArgumentException>());
+        }
+
+        [Test]
+        public void ReadWithIdTEST()
+        {
+            Game expected = new Game() { GameId = 1, ReleaseDate = new DateTime(2006, 06, 10), Name = "Witcher 3" };
+            gameMocRepo.Setup(t => t.Read(1)).Returns(expected);
+            var result = GameLogic.Read(1);
+            Assert.AreEqual(expected, result);
+        }
+
         [Test]
         public void DeleteTEST()
         {
