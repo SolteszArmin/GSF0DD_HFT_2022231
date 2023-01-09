@@ -75,7 +75,7 @@ namespace GSF0DD_HFT_2022231.Test
         }
 
         [Test]
-        public void GamesPublishedByFromSoftwareTest()
+        public void GamesPublishedByFromSoftwareTEST()
         {
             var result = GameLogic.GamesPublishedByFromSoftware();
 
@@ -89,17 +89,56 @@ namespace GSF0DD_HFT_2022231.Test
         }
 
         [Test]
-        public void CreatTest1()
+        public void GamesReleasedBetween2012And2022ByFromSoftwareTEST()
         {
-            var game = new Game();
-            try
+            var result = GameLogic.GamesReleasedBetween2012And2022ByFromSoftware();
+
+            var expected = new List<Game>()
             {
-                GameLogic.Create(game);
-            }
-            catch
+                new Game() { GameId = 2, PublisherId = 1, GenreId = 2, ReleaseDate=new DateTime(2017,10,1), Name = "Dark Souls 3" },
+            }.AsQueryable();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GamesWithActionGenreTEST()
+        {
+            var result = GameLogic.GamesWithActionGenre();
+
+            var expected = new List<Game>()
             {
-            }
-            Assert.That(() => GameLogic.Create(game), Throws.TypeOf<ArgumentException>());
+                new Game() { GameId = 4, ReleaseDate=new DateTime(2004,06,11), Name = "Call of Duty 2" },
+                new Game() { GameId = 6,  ReleaseDate=new DateTime(2003,02,16), Name = "Half Life 2" }
+            }.AsQueryable();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GamesWithOpenWorldgenrereleasedByFromSoftwareTEST()
+        {
+            var result = GameLogic.GamesWithOpenWorldgenrereleasedByFromSoftware();
+
+            var expected = new List<Game>()
+            {
+                new Game() { GameId = 3, ReleaseDate=new DateTime(2022,03,10),  Name = "Elden Ring" },
+            }.AsQueryable();
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void ActivisionGamesTEST()
+        {
+            var result = GameLogic.ActivisionGames();
+
+            var expected = new List<Game>()
+            {
+                new Game() { GameId = 4, ReleaseDate=new DateTime(2004,06,11), Name = "Call of Duty 2" },
+            }.AsQueryable();
+
+            Assert.AreEqual(expected, result);
         }
 
         [Test]
