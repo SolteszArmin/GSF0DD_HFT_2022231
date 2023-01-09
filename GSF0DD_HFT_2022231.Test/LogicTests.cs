@@ -19,18 +19,22 @@ namespace GSF0DD_HFT_2022231.Test
         PublisherLogic PublisherLogic;
         Mock<IRepository<Game>> gameMocRepo;
         Mock<IRepository<Publisher>> publisherMocRepo;
-        Mock<IRepository<Genre>> GenreMocRepo;
+        Mock<IRepository<Genre>> genreMocRepo;
 
         [SetUp]
         public void Initialize()
         {
-            Publisher FromSoftware = new Publisher() { Name = "From Software", PublisherId = 1 };
-            Publisher Activision = new Publisher() { Name = "Activision", PublisherId = 2 };
-            Publisher Blizzard = new Publisher() { Name = "Blizzard", PublisherId = 3 };
+            Publisher FromSoftware = new Publisher() { PublisherId = 1, Name = "From Software" };
+            Publisher Activision = new Publisher() { PublisherId = 2, Name = "Activision" };
+            Publisher Blizzard = new Publisher() { PublisherId = 3, Name = "Blizzard" };
+            Publisher CDRED = new Publisher() { PublisherId = 4, Name = "CD Project Red" };
+            Publisher Valve = new Publisher() { PublisherId = 5, Name = "Valve" };
 
-            Genre Action = new Genre() { Name = "Action", GenreId = 1 };
-            Genre MMO = new Genre() { Name = "MMO", GenreId = 2 };
-            Genre OpenWorld = new Genre() { Name = "OpenWorld", GenreId = 3 };
+
+            Genre Action = new Genre() { GenreId = 1, Name = "Action" };
+            Genre RPG = new Genre() { GenreId = 2, Name = "RPG" };
+            Genre MMO = new Genre() { GenreId = 3, Name = "MMO" };
+            Genre OpenWorld = new Genre() { GenreId = 4, Name = "OpenWorld" };
 
             var publishers = new List<Publisher>()
             {
@@ -43,25 +47,27 @@ namespace GSF0DD_HFT_2022231.Test
             {
                 Action,
                 MMO,
-                OpenWorld
+                OpenWorld,
+                RPG
             }.AsQueryable();
 
             var games = new List<Game>()
             {
-                new Game() {GameId=1,Name="World of Warcraft", GenreId=MMO.GenreId, PublisherId=Blizzard.PublisherId, ReleaseDate=new DateTime(2004,10,4)},
-                new Game() {GameId=2,Name="Elden Ring", GenreId=OpenWorld.GenreId, PublisherId=FromSoftware.PublisherId, ReleaseDate=new DateTime(2022,10,4)},
-                new Game() {GameId=3,Name="Dark souls 2", GenreId=Action.GenreId, PublisherId=FromSoftware.PublisherId, ReleaseDate=new DateTime(2015,10,4)},
-                new Game() {GameId=4,Name="Sekiro", GenreId=Action.GenreId, PublisherId=FromSoftware.PublisherId, ReleaseDate=new DateTime(2021,10,4)},
-                new Game() {GameId=5,Name="Call of Duty 2", GenreId=Action.GenreId, PublisherId=Activision.PublisherId, ReleaseDate=new DateTime(2012,10,4)},
+                new Game() {GameId =1, Publisher=CDRED, PublisherId=CDRED.PublisherId,Genre=OpenWorld, GenreId=OpenWorld.GenreId, ReleaseDate=new DateTime(2006,06,10), Name= "Witcher 3"},
+                new Game() { GameId = 2,Publisher=FromSoftware, PublisherId = FromSoftware.PublisherId,Genre=RPG, GenreId = RPG.GenreId, ReleaseDate=new DateTime(2017,10,1), Name = "Dark Souls 3" },
+                new Game() { GameId = 3,Publisher=FromSoftware, PublisherId = FromSoftware.PublisherId,Genre=OpenWorld, GenreId = OpenWorld.GenreId, ReleaseDate=new DateTime(2022,03,10),  Name = "Elden Ring" },
+                new Game() { GameId = 4,Publisher=Activision, PublisherId = Activision.PublisherId,Genre=Action, GenreId = Action.GenreId, ReleaseDate=new DateTime(2004,06,11), Name = "Call of Duty 2" },
+                new Game() { GameId = 5,Publisher=Blizzard, PublisherId = Blizzard.PublisherId,Genre=MMO, GenreId = MMO.GenreId, ReleaseDate=new DateTime(2006,08,20),  Name = "World of Warcraft" },
+                new Game() { GameId = 6, Publisher=Valve,PublisherId = Valve.PublisherId,Genre=Action, GenreId = Action.GenreId, ReleaseDate=new DateTime(2003,02,16), Name = "Half Life 2" },
             }.AsQueryable();
 
             gameMocRepo = new Mock<IRepository<Game>>();
             gameMocRepo.Setup(x => x.ReadAll()).Returns(games);
             GameLogic = new GameLogic(gameMocRepo.Object);
 
-            GenreMocRepo = new Mock<IRepository<Genre>>();
-            GenreMocRepo.Setup(x => x.ReadAll()).Returns(genres);
-            GenreLogic = new GenreLogic(GenreMocRepo.Object);
+            genreMocRepo = new Mock<IRepository<Genre>>();
+            genreMocRepo.Setup(x => x.ReadAll()).Returns(genres);
+            GenreLogic = new GenreLogic(genreMocRepo.Object);
 
             publisherMocRepo = new Mock<IRepository<Publisher>>();
             publisherMocRepo.Setup(x => x.ReadAll()).Returns(publishers);
@@ -72,14 +78,35 @@ namespace GSF0DD_HFT_2022231.Test
         public void GamesPublishedByFromSoftwareTest()
         {
             var result = GameLogic.GamesPublishedByFromSoftware();
+
             var expected = new List<Game>()
             {
-                new Game() {GameId=2,Name="Elden Ring", GenreId=3, PublisherId=1, ReleaseDate=new DateTime(2022,10,4)},
-                new Game() {GameId=3,Name="Dark souls 2", GenreId=1, PublisherId=1, ReleaseDate=new DateTime(2015,10,4)},
-                new Game() {GameId=4,Name="Sekiro", GenreId=1, PublisherId=1, ReleaseDate=new DateTime(2021,10,4)}
+                new Game() { GameId = 2, PublisherId = 1, GenreId = 2, ReleaseDate=new DateTime(2017,10,1), Name = "Dark Souls 3" },
+                new Game() { GameId = 3, PublisherId = 1, GenreId = 4, ReleaseDate=new DateTime(2022,03,10),  Name = "Elden Ring" },
             }.AsQueryable();
 
             Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void CreatTest1()
+        {
+            var game = new Game();
+            try
+            {
+                GameLogic.Create(game);
+            }
+            catch
+            {
+            }
+            Assert.That(() => GameLogic.Create(game), Throws.TypeOf<ArgumentException>());
+        }
+
+        [Test]
+        public void DeleteTEST()
+        {
+            GameLogic.Delete(1);
+            gameMocRepo.Verify(t => t.Delete(It.IsAny<int>()), Times.Once);
         }
     }
 }

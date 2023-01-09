@@ -34,6 +34,11 @@ namespace GSF0DD_HFT_2022231.Logic.Classes
 
         public void Create(Game item)
         {
+            if (string.IsNullOrEmpty(item.Name))
+            {
+                throw new ArgumentException("Name is empty");
+            }
+
             this.repository.Create(item);
         }
 

@@ -7,11 +7,11 @@ namespace GSF0DD_HFT_2022231.Endpoint.Controller
 {
     [Route("[controller]/[action]")]
     [ApiController]
-    public class StatiscticController : ControllerBase
+    public class StatisticsController : ControllerBase
     {
         IGameLogic<Game> gamelogic;
 
-        public StatiscticController(IGameLogic<Game> gamelogic)
+        public StatisticsController(IGameLogic<Game> gamelogic)
         {
             this.gamelogic = gamelogic;
         }
